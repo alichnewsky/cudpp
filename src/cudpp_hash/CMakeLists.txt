@@ -56,7 +56,10 @@ set(GENCODE_SM35 -gencode=arch=compute_35,code=sm_35 -gencode=arch=compute_35,co
 set(GENCODE_SM37 -gencode=arch=compute_37,code=sm_37 -gencode=arch=compute_37,code=compute_37)
 set(GENCODE_SM50 -gencode=arch=compute_50,code=sm_50 -gencode=arch=compute_50,code=compute_50)
 set(GENCODE_SM60 -gencode=arch=compute_60,code=sm_60 -gencode=arch=compute_60,code=compute_60)
-set(GENCODE_SM70 -gencode=arch=compute_60,code=sm_70 -gencode=arch=compute_60,code=compute_60)
+
+# read https://devblogs.nvidia.com/using-cuda-warp-level-primitives/. Cuda 9 and Volta introduced a new independent thread scheduling mechanism. 
+set(GENCODE_SM70 -gencode=arch=compute_70,code=sm_70 -gencode=arch=compute_70,code=compute_70)
+set(GENCODE_SM70_IN_SM60_COMPATIBILITY_MODE -gencode=arch=compute_60,code=sm_70 -gencode=arch=compute_60,code=compute_60)
 
 #set(GENCODE -gencode=arch=compute_10,code=compute_10) # at least generate PTX
 
@@ -92,6 +95,11 @@ option(CUDPP_GENCODE_SM60
        "ON to generate code for Compute Capability 6.0 devices (e.g. Pascal P100)"
        ON)
 
+
+option(CUDPP_GENCODE_SM60_COMPATIBILITY_MODE
+       "ON to generate code for Compute Capability > 6.0 in compatibility mode. using the Pascal thread scheduling.  read https://devblogs.nvidia.com/using-cuda-warp-level-primitives/."
+       ON)
+
 option(CUDPP_GENCODE_SM70
        "ON to generate code for Compute Capability 7.0 devices (e.g. Volta V100)"
        ON)
@@ -103,40 +111,65 @@ option(CUDA_VERBOSE_PTXAS
 
 
 if (CUDPP_GENCODE_SM12)
+    message( STATUS "Generating code for SM12 architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM12})
 endif(CUDPP_GENCODE_SM12)
 
 if (CUDPP_GENCODE_SM13)
+    message( STATUS "Generating code for SM13 (Tesla C1060) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM13})
 endif(CUDPP_GENCODE_SM13)
 
 if (CUDPP_GENCODE_SM20)
+    message( STATUS "Generating code for SM20 (Fermi) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM20})
 endif(CUDPP_GENCODE_SM20)
 
 if (CUDPP_GENCODE_SM30)
+  message( STATUS "Generating code for SM30 (K10, generic Kepler) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM30})
 endif(CUDPP_GENCODE_SM30)
 
 if (CUDPP_GENCODE_SM35)
+  message( STATUS "Generating code for SM35 (K40) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM35})
 endif(CUDPP_GENCODE_SM35)
 
 if (CUDPP_GENCODE_SM37)
+  message( STATUS "Generating code for SM37 (K80) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM37})
 endif(CUDPP_GENCODE_SM37)
 
 if (CUDPP_GENCODE_SM50)
+  message( STATUS "Generating code for SM50 (Maxwell) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM50})
 endif(CUDPP_GENCODE_SM50)
 
 if (CUDPP_GENCODE_SM60)
+  message( STATUS "Generating code for SM60 ( Pascal P100 ) architecture" )
   set(GENCODE ${GENCODE} ${GENCODE_SM60})
 endif(CUDPP_GENCODE_SM60)
 
-if (CUDPP_GENCODE_SM70)
-  set(GENCODE ${GENCODE} ${GENCODE_SM70})
-endif(CUDPP_GENCODE_SM70)
+
+if( CUDPP_GENCODE_SM60_COMPATIBILITY_MODE )
+
+    # all code generation options using Pascal's thread scheduling in compatibility mode.
+
+  if (CUDPP_GENCODE_SM70)
+    message( STATUS "Building SM70 (Volta V100 architecture) code in compatibility mode : using Pascal thread scheduling" )
+    set(GENCODE ${GENCODE} ${GENCODE_SM70_IN_SM60_COMPATIBILITY_MODE})
+  endif(CUDPP_GENCODE_SM70)
+
+else ( CUDPP_GENCODE_SM60_COMPATIBILITY_MODE )
+
+  # all code generation options using Volta's nw indpendent thread scheduling.
+  
+  if (CUDPP_GENCODE_SM70)
+    message( STATUS "Building SM70 (Volta V100 architecture) code using Volta's new independent thread scheduling" )
+    set(GENCODE ${GENCODE} ${GENCODE_SM70})
+  endif(CUDPP_GENCODE_SM70)
+
+endif( CUDPP_GENCODE_SM60_COMPATIBILITY_MODE )
 
 if (CUDA_VERBOSE_PTXAS)
   set(VERBOSE_PTXAS --ptxas-options=-v)
