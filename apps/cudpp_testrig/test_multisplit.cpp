@@ -369,6 +369,10 @@ int multiSplitKeysOnlyTest(CUDPPHandle theCudpp, CUDPPConfiguration config,
         printf("\t%10ld\t%0.4f\n", elementTests[k],
             totalTime / testOptions.numIterations);
       }
+
+      if ( testFailed != 0 ) {
+	  printf("test %s FAILED FOR numElements=%u numBuckets=%u\n", __func__, k, b );
+      }
     }
   }
   printf("\n");
@@ -528,6 +532,11 @@ int multiSplitKeyValueTest(CUDPPHandle theCudpp, CUDPPConfiguration config,
         printf("\t%10ld\t%0.4f\n", elementTests[k],
             totalTime / testOptions.numIterations);
       }
+
+      if ( testFailed != 0 ) {
+	  printf("test %s FAILED FOR numElements=%u numBuckets=%u\n", __func__, k, b );
+      }
+
     }
   }
   printf("\n");
