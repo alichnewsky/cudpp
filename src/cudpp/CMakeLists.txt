@@ -102,6 +102,7 @@ set(GENCODE_SM35 -gencode=arch=compute_35,code=sm_35 -gencode=arch=compute_35,co
 set(GENCODE_SM37 -gencode=arch=compute_37,code=sm_37 -gencode=arch=compute_37,code=compute_37)
 set(GENCODE_SM50 -gencode=arch=compute_50,code=sm_50 -gencode=arch=compute_50,code=compute_50)
 set(GENCODE_SM60 -gencode=arch=compute_60,code=sm_60 -gencode=arch=compute_60,code=compute_60)
+set(GENCODE_SM70 -gencode=arch=compute_60,code=sm_70 -gencode=arch=compute_60,code=compute_60)
 
 #set(GENCODE -gencode=arch=compute_20,code=compute_20) # at least generate PTX
 
@@ -141,6 +142,14 @@ option(CUDPP_GENCODE_SM60
        "ON to generate code for Compute Capability 6.0 devices (e.g. Pascal P100)"
        ON)
 
+option(CUDPP_GENCODE_SM70
+       "ON to generate code for Compute Capability 7.0 devices (e.g. Volta V100)"
+       ON)
+
+option(CUDA_VERBOSE_PTXAS 
+       "ON for a verbose PTX assembler"
+       ON)
+
 if (CUDPP_GENCODE_SM12)
   set(GENCODE ${GENCODE} ${GENCODE_SM12})
 endif(CUDPP_GENCODE_SM12)
@@ -176,6 +185,10 @@ endif(CUDPP_GENCODE_SM50)
 if (CUDPP_GENCODE_SM60)
   set(GENCODE ${GENCODE} ${GENCODE_SM60})
 endif(CUDPP_GENCODE_SM60)
+
+if (CUDPP_GENCODE_SM70)
+  set(GENCODE ${GENCODE} ${GENCODE_SM70})
+endif(CUDPP_GENCODE_SM70)
 
 if (CUDA_VERBOSE_PTXAS)
   set(VERBOSE_PTXAS --ptxas-options=-v)
