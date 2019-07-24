@@ -48,9 +48,9 @@ set(HFILES_PUBLIC
 source_group("CUDA Source Files" FILES ${CUFILES})
 source_group("CUDA Header Files" FILES ${CUHFILES})
 
-set(GENCODE_SM12 -gencode=arch=compute_12,code=sm_12 -gencode=arch=compute_12,code=compute_12)
-set(GENCODE_SM13 -gencode=arch=compute_13,code=sm_13 -gencode=arch=compute_13,code=compute_13)
-set(GENCODE_SM20 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_20,code=compute_20)
+#set(GENCODE_SM12 -gencode=arch=compute_12,code=sm_12 -gencode=arch=compute_12,code=compute_12)
+#set(GENCODE_SM13 -gencode=arch=compute_13,code=sm_13 -gencode=arch=compute_13,code=compute_13)
+#set(GENCODE_SM20 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_20,code=compute_20)
 set(GENCODE_SM30 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_30,code=compute_30)
 set(GENCODE_SM35 -gencode=arch=compute_35,code=sm_35 -gencode=arch=compute_35,code=compute_35)
 set(GENCODE_SM37 -gencode=arch=compute_37,code=sm_37 -gencode=arch=compute_37,code=compute_37)
@@ -99,7 +99,7 @@ option(CUDPP_GENCODE_SM70
 
 option(CUDA_VERBOSE_PTXAS
        "ON for a verbose PTX assembler"
-       ON)
+       OFF)
 
 
 if (CUDPP_GENCODE_SM12)
